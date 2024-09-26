@@ -27,6 +27,7 @@ The data in PHA_table.xlsx comes from: https://cneos.jpl.nasa.gov/ca/ and is sor
 5. Next, open the MATLAB file calculate_analytical_method and change line 10 to for ppp = 33:33. Then run the program. This program will use the analytical method to calculate the deflection distance, writing the results into Columns BI (delta_r_COG_theory) to BL (Gain_theory_percent) in the table, and output them to temporary_result.xlsx. As before, once you confirm that the results are correct, you can delete the original PHA_table.xlsx and rename temporary_result.xlsx to PHA_table.xlsx.
 
 At this point, all calculation processes are complete, and all important parameters are recorded in PHA_table.xlsx.
+
 % ------------------------------------------------------------------------
 
 
@@ -46,4 +47,5 @@ Regarding the plotting aspect, the main figures produced by this model include:
 The files I provided already contain the result plots for the first 32 PHAs in the corresponding locations, which you can check.
 
 These plotting programs do not require significant modifications; just ensure that your target PHA is included in the for loop. For example, in plot_launch_window.m, line 21 reads for i = 1:32, which will generate and export the launch windows for PHAs in rows 2 to 33 of PHA_table to High_Precision_Orbit_Propagator\output_result\different_PHA\launch_window\pngfile.
+
 % -------------------------------------------------------------------
