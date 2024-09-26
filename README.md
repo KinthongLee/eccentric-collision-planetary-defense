@@ -3,7 +3,10 @@ This code primarily generates the original code used in the Icarus paper titled 
 
 Additionally, I am currently conducting research on asteroid defense at Tsinghua University in China and welcome any potential collaborations! You can reach me at: ktlee3819@gmail.com.
 
-% ---------------------------------------------------------
+!!!!!!BEFORE YOU BEGIN!!!!!!!!!!
+Make sure you download JPL planetary ephemerides ".bsp" files, specifically de441_part-1.bsp and de441_part-2.bsp (The lastest JPL planetary ephemerides on 26th Sept 2024) from https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/ and add it to location "eccentric_collision_planetary_defense/mice/kernel"
+If not the high precision orbit propagator will fails. Because both planetary ephemerides are way larger than github's limitation on files upload (100MB), both planetary ephemerides are leave for you to download separately
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 The entire code is primarily divided into two parts: 1. Calculation 2. Plotting.
 
