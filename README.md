@@ -3,7 +3,7 @@ This code primarily generates the original code used in the Icarus paper titled 
 
 Additionally, I am currently conducting research on asteroid defense at Tsinghua University in China and welcome any potential collaborations! You can reach me at: ktlee3819@gmail.com.
 
-% --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+% ---------------------------------------------------------
 
 The entire code is primarily divided into two parts: 1. Calculation 2. Plotting.
 
