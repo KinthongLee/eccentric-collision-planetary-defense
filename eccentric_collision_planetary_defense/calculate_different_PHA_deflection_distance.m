@@ -105,9 +105,7 @@ month_ini_string = values(monthNameMap, tokensMatrix(:,2));
 
 % Read 3D Model of the asteroid
 % Here use Apophis light-curve 3d model, modify if needed
-OBJ = read_wobj('Apophis_Model.obj');
-vertices = OBJ.vertices;
-faces = OBJ.objects(4).data.vertices;
+[vertices, faces] = readObj(model);
 
 % Properties, modify if needed 
 mass_Apophis = 2.7e10;
