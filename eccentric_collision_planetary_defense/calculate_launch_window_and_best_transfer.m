@@ -64,7 +64,7 @@ month_ini_string = values(monthNameMap, tokensMatrix(:,2));
 %-----------------------------Load Kernels------------------------------------------------
  % List all .bsp files in the directory
  
-    % Start the SPMD block for parallel execution
+    % Start the SPMD block for parallel execution （parfor loop）
     spmd
         % List all .bsp files in the directory
         bspFiles = dir(fullfile(pathTokernel, '*.bsp'));
@@ -83,6 +83,24 @@ month_ini_string = values(monthNameMap, tokensMatrix(:,2));
             % Load the file using cspice_furnsh
             cspice_furnsh(filePath);
         end
+    end
+    % Load kernel for non parfor loop
+    % List all .bsp files in the directory
+    bspFiles = dir(fullfile(pathTokernel, '*.bsp'));
+    
+    % List all .txt files in the directory
+    txtFiles = dir(fullfile(pathTokernel, '*.txt'));
+    
+    % Combine the .bsp and .txt files into a single array
+    allFiles = [bspFiles; txtFiles];
+    
+    % Iterate over all files to load them
+    for k = 1:length(allFiles)
+        % Construct the full path for each file
+        filePath = fullfile(pathTokernel, allFiles(k).name);
+        
+        % Load the file using cspice_furnsh
+        cspice_furnsh(filePath);
     end
  % -----------------------------------------------------------------------------------------
 
