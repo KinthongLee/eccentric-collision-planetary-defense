@@ -167,8 +167,8 @@ toc;
     delta_v_BIP_avg = [mean(delta_v_BIP(:,1));mean(delta_v_BIP(:,2));mean(delta_v_BIP(:,3))];
     delta_v_COG_avg = [mean(delta_v_COG(:,1));mean(delta_v_COG(:,2));mean(delta_v_COG(:,3))];
     % project delta v to t,n,h direction
-    delta_v_BIP_final = [dot(delta_v_BIP_avg,vt),dot(delta_v_BIP_avg,vn),dot(delta_v_BIP_avg,vh)];
-    delta_v_COG_final = [dot(delta_v_COG_avg,vt),dot(delta_v_COG_avg,vn),dot(delta_v_COG_avg,vh)];
+    delta_v_BIP_tnh = [dot(delta_v_BIP_avg,vt),dot(delta_v_BIP_avg,vn),dot(delta_v_BIP_avg,vh)];
+    delta_v_COG_tnh = [dot(delta_v_COG_avg,vt),dot(delta_v_COG_avg,vn),dot(delta_v_COG_avg,vh)];
 
 
     % write data to table
@@ -179,12 +179,12 @@ toc;
     data.num_of_negative_COG(p) = sum ( delta_r_min_COG <= 0 );
     data.Gain(p) = vpa(mean(delta_r_min_BIP)-mean(delta_r_min_COG));
     data.Gain_percent(p) = vpa(  (mean(delta_r_min_BIP)-mean(delta_r_min_COG))/mean(delta_r_min_COG)*100  );
-    data.delta_v_t_BIP(p) = delta_v_BIP_final(1);
-    data.delta_v_n_BIP(p) = delta_v_BIP_final(2);
-    data.delta_v_h_BIP(p) = delta_v_BIP_final(3);
-    data.delta_v_t_COG(p) = delta_v_COG_final(1);
-    data.delta_v_n_COG(p) = delta_v_COG_final(2);
-    data.delta_v_h_COG(p) = delta_v_COG_final(3);
+    data.delta_v_t_BIP(p) = delta_v_BIP_tnh(1);
+    data.delta_v_n_BIP(p) = delta_v_BIP_tnh(2);
+    data.delta_v_h_BIP(p) = delta_v_BIP_tnh(3);
+    data.delta_v_t_COG(p) = delta_v_COG_tnh(1);
+    data.delta_v_n_COG(p) = delta_v_COG_tnh(2);
+    data.delta_v_h_COG(p) = delta_v_COG_tnh(3);
     data.different_delta_v_t(p) = data.delta_v_t_BIP(p) - data.delta_v_t_COG(p);
     data.different_delta_v_t_relative(p) = data.different_delta_v_t(p) / data.delta_v_t_COG(p);
     data.different_delta_v_n(p) = data.delta_v_n_BIP(p) - data.delta_v_n_COG(p);
