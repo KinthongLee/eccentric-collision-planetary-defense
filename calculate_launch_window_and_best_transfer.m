@@ -9,7 +9,7 @@ clc
 % spefically Columns M to AO
 % If the result is correct, please manually copy and paste the result into PHA_table.xlsx.
 % MAKE SURE TO DOWNLOAD THE SPECIFIC ASTEROID ".bsp" FILE AND STORE IT TO
-% mice/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
+% code/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
 % SPICE
 
 % ---------------------------  Add Path  -----------------------------------------------
