@@ -15,10 +15,12 @@ clc
 
 % If the result is correct, please manually copy and paste the result into PHA_table.xlsx.
 % MAKE SURE TO DOWNLOAD THE SPECIFIC ASTEROID ".bsp" FILE AND STORE IT TO
-% code/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
+% mice/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
 % SPICE
 
-% ---------------------------  Add Path  -----------------------------------------------
+% -------------------------------------------------------------------------
+% Add Path 
+% -------------------------------------------------------------------------
 currentDir = fileparts(which('calculate_different_PHA_deflection_distance.m'));
 addpath(genpath(currentDir))
 
@@ -33,11 +35,12 @@ end
 % Specify the directory where your .bsp files are located
 pathTokernel = fullfile(currentDir, 'code', 'kernel');
 
-% ---------------------------------------------------------------------------------------
 
 
 
-% ---------Read data from PHA_table.xlsx-----------------------------------------
+% -------------------------------------------------------------------------
+% ---------Read data from PHA_table.xlsx-----------------------------------
+% -------------------------------------------------------------------------
 data = readtable('PHA_table');
 % Extract year, month, and day from the 'Close_Approach_CA_Date' column
 dateStrings = data.Close_Approach_CA_Date;
@@ -66,11 +69,12 @@ monthNameMap = containers.Map(monthAbbreviations, monthFullNames);
 % Convert month abbreviations to numbers and full names
 month_ini_num = cell2mat(values(monthNumMap, tokensMatrix(:,2)));
 month_ini_string = values(monthNameMap, tokensMatrix(:,2));
-% -----------------------------------------------------------------------
 
 
 
-%-----------------------------Load Kernels------------------------------------------------
+% -------------------------------------------------------------------------
+% Load Kernels
+% -------------------------------------------------------------------------
  % List all .bsp files in the directory
  
     % Start the SPMD block for parallel execution
@@ -93,48 +97,54 @@ month_ini_string = values(monthNameMap, tokensMatrix(:,2));
             cspice_furnsh(filePath);
         end
     end
- % -----------------------------------------------------------------------------------------
 
 
 
 
-
-% Code starts here
-
+% -------------------------------------------------------------------------
+% Parameters
+% -------------------------------------------------------------------------
 % Number of Monte-Carlo samples modify if needed
  sample_size = 100000;
-
-% Read 3D Model of the asteroid
-% Here use Apophis light-curve 3d model, modify if needed
-[vertices, faces] = readObj(model);
 
 % Properties, modify if needed 
 mass_Apophis = 2.7e10;
 mass_rocket_0 = 9000; % kg
 I_rocket = 320; % 比冲
 
+% Read 3D Model of the asteroid
+% Here use Apophis light-curve 3d model, modify if needed
+model = 'Apophis_Model.obj';
+[vertices, faces] = readObj(model);
+
+
+
+
+% -------------------------------------------------------------------------
+% Code starts here
+% -------------------------------------------------------------------------
 % Run through the asteroid, p represent the number of row at the table "PHA_table.xlsx"
 for p = 33 : 33
-target = num2str(data.BSP_file_name(p));
-v_imp = [data.v_imp_X(p);data.v_imp_Y(p);data.v_imp_Z(p)];
-v_ast = [data.v_ast_X(p);data.v_ast_Y(p);data.v_ast_Z(p)];
-delta_v_a = data.Delta_v_a(p); % v_INF in the article
-CA_distance = data.r_min_by_matlab(p); % m
-dt1 = datetime(data.Best_Impact_Year(p),data.Best_Impact_Month(p),data.Best_Impact_Date(p),0,0,0);% Impact date
-str1 = sprintf(' %s %g , %g %g:%g:%g', monthToString(data.Best_Impact_Month(p)),data.Best_Impact_Date(p),data.Best_Impact_Year(p),0,0,0); % Impact date
-str2 = sprintf(' %s %g , %g %g:%g:%g', cell2mat(month_ini_string(p)),date_ini(p),year_ini(p),0,0,0); % Closest-approach
-v_r = v_imp - v_ast;
-
-mass_rocket = mass_rocket_0 * exp(-delta_v_a*1000 / (I_rocket * 9.80665)); % kg
-et_impact = cspice_str2et(str1);
-et_min_earth = cspice_str2et(str2);
-delta_t_to_min_point = et_min_earth - et_impact;
-Step   = 3600;   % [s] integration step size
-N_Step = ceil(delta_t_to_min_point / Step) + 86400*2/3600;
-
-
-
-% Show progress in the parfor loop
+    target = num2str(data.BSP_file_name(p));
+    v_imp = [data.v_imp_X(p);data.v_imp_Y(p);data.v_imp_Z(p)];
+    v_ast = [data.v_ast_X(p);data.v_ast_Y(p);data.v_ast_Z(p)];
+    delta_v_a = data.Delta_v_a(p); % v_INF in the article
+    CA_distance = data.r_min_by_matlab(p); % m
+    dt1 = datetime(data.Best_Impact_Year(p),data.Best_Impact_Month(p),data.Best_Impact_Date(p),0,0,0);% Impact date
+    str1 = sprintf(' %s %g , %g %g:%g:%g', monthToString(data.Best_Impact_Month(p)),data.Best_Impact_Date(p),data.Best_Impact_Year(p),0,0,0); % Impact date
+    str2 = sprintf(' %s %g , %g %g:%g:%g', cell2mat(month_ini_string(p)),date_ini(p),year_ini(p),0,0,0); % Closest-approach
+    v_r = v_imp - v_ast;
+    
+    mass_rocket = mass_rocket_0 * exp(-delta_v_a*1000 / (I_rocket * 9.80665)); % kg
+    et_impact = cspice_str2et(str1);
+    et_min_earth = cspice_str2et(str2);
+    delta_t_to_min_point = et_min_earth - et_impact;
+    Step   = 3600;   % [s] integration step size
+    N_Step = ceil(delta_t_to_min_point / Step) + 86400*2/3600;
+    
+    
+    
+    % Show progress in the parfor loop
     parfor_progress(sample_size);
 
     % starts the loop
@@ -146,20 +156,21 @@ N_Step = ceil(delta_t_to_min_point / Step) + 86400*2/3600;
     delta_v_BIP = zeros(sample_size,3);
     delta_v_COG = zeros(sample_size,3);
     angles = zeros(sample_size,3);
-parfor i = 1 : sample_size 
-    beta = 3.61 + unifrnd(-0.25,0.19); % generate beta coefficien from a skewness distribution as mentioned in article
-    [dv_BIP,dv_COG,ang] = get_delta_v_from_momentum(v_imp,v_ast,mass_rocket,vertices,faces,beta);
-    delta_v_BIP(i,:) = dv_BIP;
-    delta_v_COG(i,:) = dv_COG';
-    angles(i,:) = ang;
-    norm_delta_v_BIP(i,1) = norm(dv_BIP);
-    norm_delta_v_COG(i,1) = norm(dv_COG);
-    delta_r_min_BIP(i,1) = Propagation(target,dv_BIP',CA_distance,dt1,Step,N_Step);
-    delta_r_min_COG(i,1) = Propagation(target,dv_COG,CA_distance,dt1,Step,N_Step);
-    parfor_progress;
-end
-toc;
-
+    
+    parfor i = 1 : sample_size 
+        beta = 3.61 + unifrnd(-0.25,0.19); % generate beta coefficien from a skewness distribution as mentioned in article
+        [dv_BIP,dv_COG,ang] = get_delta_v_from_momentum(v_imp,v_ast,mass_rocket,vertices,faces,beta);
+        delta_v_BIP(i,:) = dv_BIP;
+        delta_v_COG(i,:) = dv_COG';
+        angles(i,:) = ang;
+        norm_delta_v_BIP(i,1) = norm(dv_BIP);
+        norm_delta_v_COG(i,1) = norm(dv_COG);
+        delta_r_min_BIP(i,1) = Propagation(target,dv_BIP',CA_distance,dt1,Step,N_Step);
+        delta_r_min_COG(i,1) = Propagation(target,dv_COG,CA_distance,dt1,Step,N_Step);
+        parfor_progress;
+    end
+    toc;
+    
     % Ready to write data to table
     r_ast = [data.x_ast_impact(p);data.y_ast_impact(p);data.z_ast_impact(p)];
     vt = v_ast / norm(v_ast);

@@ -9,10 +9,12 @@ clc
 % spefically Columns M to AO
 % If the result is correct, please manually copy and paste the result into PHA_table.xlsx.
 % MAKE SURE TO DOWNLOAD THE SPECIFIC ASTEROID ".bsp" FILE AND STORE IT TO
-% code/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
+% mice/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
 % SPICE
 
-% ---------------------------  Add Path  -----------------------------------------------
+% -------------------------------------------------------------------------
+% Add Path 
+% -------------------------------------------------------------------------
 currentDir = fileparts(which('calculate_launch_window_and_best_transfer.m'));
 addpath(genpath(currentDir))
 
@@ -27,10 +29,11 @@ end
 % Specify the directory where your .bsp files are located
 pathTokernel = fullfile(currentDir, 'code', 'kernel');
 
-% ---------------------------------------------------------------------------------------
 
 
-% ---------Read data from PHA_table.xlsx-----------------------------------------
+% -------------------------------------------------------------------------
+% Read data from PHA_table.xlsx
+% -------------------------------------------------------------------------
 data = readtable('PHA_table');
 % Extract year, month, and day from the 'Close_Approach_CA_Date' column
 dateStrings = data.Close_Approach_CA_Date;
@@ -59,11 +62,12 @@ monthNameMap = containers.Map(monthAbbreviations, monthFullNames);
 % Convert month abbreviations to numbers and full names
 month_ini_num = cell2mat(values(monthNumMap, tokensMatrix(:,2)));
 month_ini_string = values(monthNameMap, tokensMatrix(:,2));
-% -----------------------------------------------------------------------
 
 
 
-%-----------------------------Load Kernels------------------------------------------------
+% -------------------------------------------------------------------------
+% Load Kernels
+% -------------------------------------------------------------------------
  % List all .bsp files in the directory
  
     % Start the SPMD block for parallel execution （parfor loop）
@@ -104,22 +108,44 @@ month_ini_string = values(monthNameMap, tokensMatrix(:,2));
         % Load the file using cspice_furnsh
         cspice_furnsh(filePath);
     end
- % -----------------------------------------------------------------------------------------
 
 
-
-
-% The code starts here
+% -------------------------------------------------------------------------
+% Parameters
+% -------------------------------------------------------------------------
 % Gravitational constant of Sun
-mu = 1.32712440041279e+20;   
+mu = 1.32712440041279e+20;  
+% Mass of Asteroid
+mass_ast = 2.7e10; %kg
+% beta coefficient
+beta = 3.61;
+    % mass of the impactor
+mass_rocket_0 = 9000; % kg
+% Specific impulse of rocket
+I_rocket = 320; % s
+% Payload capacity
+C3 = 50; %km^2 /s^2 
+    % Step size of launch window
+launch_Step = 1; % day
+% Total Step, here is 10 years, modify if needed
+launch_NStep = 365*8+366*2;
+% minimum transfer days
+minimum_transfer_days = 0; % day
+    % step size for the High Precision Orbit Propagrator
+Step   = 3600;   % seconds
+% Total launch steps
+total_launch_Step = launch_NStep / launch_Step; 
 
+
+
+
+% -------------------------------------------------------------------------
+% The code starts here
+% -------------------------------------------------------------------------
 for i = 33 : 33
     % Read BSP name of the asteroid
     target = num2str(data.BSP_file_name(i)); 
-    % Mass of Asteroid
-    mass_ast = 2.7e10; %kg
-    % beta coefficient
-    beta = 3.61;
+
     % Closest-Approach date with Earth
     str_min_earth = sprintf(' %s %g , %g %g:%g:%g', cell2mat(month_ini_string(i)),date_ini(i),year_ini(i),0,0,0);
     mjdate_for_min_earth = Mjday(year_ini(i),month_ini_num(i),date_ini(i),0,0,0);
@@ -127,38 +153,20 @@ for i = 33 : 33
     % Minimum distance with Earth
     min_distance_to_Earth = data.r_min_by_matlab(i);
     
-    % mass of the impactor
-    mass_rocket_0 = 9000; % kg
-    % Specific impulse of rocket
-    I_rocket = 320; % s
-    % Payload capacity
-    C3 = 50; %km^2 /s^2 
-    
     % Specific size of the launch window
     % Begining of launch date
     % Here make the begining of launch date by 10 years before
     % closest-approach year. Modify if needed
     launch_date = Mjday(year_ini(i)-10,1,1,0,0,0); % Convert to MJD
-    % Step size of each launch window
-    % Modiy if needed
-    launch_Step = 1; % day
-    % Total Step, here is 10 years, modify if needed
-    launch_NStep = 365*8+366*2;
-    % minimum transfer days
-    minimum_transfer_days = 0; % day
+
     % Last date of the launch window
     % here make the year of the closest approach as the end of thte launch
     % window, modify if needed
     last_transfer_date = Mjday(year_ini(i),1,1,0,0,0);
+
     % transfer days, keep it unchanged
     transfer_days = last_transfer_date - launch_date; % day
-    % step size for the High Precision Orbit Propagrator
-    Step   = 3600;   % seconds
-    
-    
-    % 设置合理的发射&到达时机：
-    total_launch_Step = launch_NStep / launch_Step; % 需要测试的总迭代数目
-    % 内容为 way = 0代表逆时针
+
     possible_launch = NaT(total_launch_Step,transfer_days); 
     possible_reach = NaT(total_launch_Step,transfer_days);  
     delta_r_min = zeros(total_launch_Step,transfer_days);

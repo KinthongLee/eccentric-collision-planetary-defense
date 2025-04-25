@@ -6,10 +6,12 @@ clearvars
 % error with SPICE. The result will be export as a new table temporary_result.xlsx
 % If the result is correct, please manually copy and paste the result into PHA_table.xlsx.
 % MAKE SURE TO DOWNLOAD THE SPECIFIC ASTEROID ".bsp" FILE AND STORE IT TO
-% code/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
+% mice/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
 % SPICE
 
-% ---------------------------  Add Path  -----------------------------------------------
+% -------------------------------------------------------------------------
+% Add Path  
+% -------------------------------------------------------------------------
 currentDir = fileparts(which('calculate_closest_approach_distance_and_relative_error.m'));
 addpath(genpath(currentDir))
 
@@ -17,13 +19,14 @@ addpath(genpath(currentDir))
 % Specify the directory where your .bsp files are located
 pathTokernel = fullfile(currentDir, 'code', 'kernel');
 
-% ---------------------------------------------------------------------------------------
 
 close all
 profile on
 tic
 
-% ---------Read data from PHA_table.xlsx-----------------------------------------
+% -------------------------------------------------------------------------
+% Read data from PHA_table.xlsx
+% -------------------------------------------------------------------------
 data = readtable('PHA_table');
 % Extract year, month, and day from the 'Close_Approach_CA_Date' column
 dateStrings = data.Close_Approach_CA_Date;
@@ -52,10 +55,12 @@ monthNameMap = containers.Map(monthAbbreviations, monthFullNames);
 % Convert month abbreviations to numbers and full names
 month_ini_num = cell2mat(values(monthNumMap, tokensMatrix(:,2)));
 month_ini_string = values(monthNameMap, tokensMatrix(:,2));
-% -----------------------------------------------------------------------
 
 
-%-----------------------------Load Kernels------------------------------------------------
+
+% -------------------------------------------------------------------------
+% Load Kernels
+% -------------------------------------------------------------------------
  % List all .bsp files in the directory
 bspFiles = dir(fullfile(pathTokernel, '*.bsp'));
 
@@ -73,14 +78,18 @@ for k = 1:length(allFiles)
     % Load the file using cspice_furnsh
     cspice_furnsh(filePath);
 end
- % -----------------------------------------------------------------------------------------
 
-% ---------------STep and total steps ---------------------------------
+% -------------------------------------------------------------------------
+% STep and total steps 
+% -------------------------------------------------------------------------
 Step   = 3600;   % [s] integration step size
 N_Step = 24*366*10; % number of integration steps 
-% -----------------------------------------------------------------------------------------
 
+
+
+% -------------------------------------------------------------------------
 % Code starts here
+% -------------------------------------------------------------------------
 for p = 33 : 33
 % Initial States 
     target = num2str(data.BSP_file_name(p));
