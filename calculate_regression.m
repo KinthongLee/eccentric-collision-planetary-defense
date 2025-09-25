@@ -1,3 +1,22 @@
+%==========================================================================
+% Eccentric collision for Planetary Defense Mission
+% (Asteroid Kinetic Delfection)
+% 
+% Lee Kin Thong 
+% Oct 1 2024
+%==========================================================================
+% You are free to use and modify the code, but you MUST cite the following
+% papers:
+%
+% Lee, Kinthong, Zhengqing Fang, and Zhaokui Wang. "Investigation of the 
+% incremental benefits of eccentric collisions in kinetic deflection of 
+% potentially hazardous asteroids." Icarus 425 (2025): 116312.
+%
+% Feels free to contact me for any inquiry or cooperation!
+% ktlee3819@gmail.com
+%==========================================================================
+% This code will Plot regression model
+% -------------------------------------------------------------------------
 clearvars
 clc
 % Read the data ready to be regression

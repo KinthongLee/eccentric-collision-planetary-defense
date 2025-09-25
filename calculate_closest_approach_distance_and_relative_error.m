@@ -1,13 +1,33 @@
-clc
-clearvars
-
+%==========================================================================
+% Eccentric collision for Planetary Defense Mission
+% (Asteroid Kinetic Delfection)
+% 
+% Lee Kin Thong 
+% Oct 1 2024
+%==========================================================================
+% You are free to use and modify the code, but you MUST cite the following
+% papers:
+%
+% Lee, Kinthong, Zhengqing Fang, and Zhaokui Wang. "Investigation of the 
+% incremental benefits of eccentric collisions in kinetic deflection of 
+% potentially hazardous asteroids." Icarus 425 (2025): 116312.
+%
+% Feels free to contact me for any inquiry or cooperation!
+% ktlee3819@gmail.com
+%==========================================================================
 % This code will Read the data from PHA_table, spefically Columns A to J
 % This code will calculate the Closest-approach with Earth and the relative
-% error with SPICE. The result will be export as a new table temporary_result.xlsx
-% If the result is correct, please manually copy and paste the result into PHA_table.xlsx.
+% error with SPICE. The result will be export as a new table 
+% temporary_result.xlsx
+% If the result is correct, please manually copy and paste the result into
+%  PHA_table.xlsx.
 % MAKE SURE TO DOWNLOAD THE SPECIFIC ASTEROID ".bsp" FILE AND STORE IT TO
 % mice/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
 % SPICE
+%--------------------------------------------------------------------------
+clc
+clearvars
+
 
 % -------------------------------------------------------------------------
 % Add Path  

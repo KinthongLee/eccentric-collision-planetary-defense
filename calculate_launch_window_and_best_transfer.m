@@ -1,18 +1,37 @@
-clearvars
-clc
+%==========================================================================
+% Eccentric collision for Planetary Defense Mission
+% (Asteroid Kinetic Delfection)
 % 
+% Lee Kin Thong 
+% Oct 1 2024
+%==========================================================================
+% You are free to use and modify the code, but you MUST cite the following
+% papers:
+%
+% Lee, Kinthong, Zhengqing Fang, and Zhaokui Wang. "Investigation of the 
+% incremental benefits of eccentric collisions in kinetic deflection of 
+% potentially hazardous asteroids." Icarus 425 (2025): 116312.
+%
+% Feels free to contact me for any inquiry or cooperation!
+% ktlee3819@gmail.com
+%==========================================================================
 % This code will Read the data from PHA_table
 % This code will calculate all possible launch window by solving Lambert
 % problem. 
 % The result of .mat file will be store in specific location.
 % The result will also be export as a new table temporary_result.xlsx,
 % spefically Columns M to AO
-% If the result is correct, please manually copy and paste the result into PHA_table.xlsx.
+% If the result is correct, please manually copy and paste the result 
+% into PHA_table.xlsx.
 % MAKE SURE TO DOWNLOAD THE SPECIFIC ASTEROID ".bsp" FILE AND STORE IT TO
 % mice/kernel/ !! OTHERWISE IT WILL FAILED TO GET DATA OF ASTEROID FROM
 % SPICE
-
 % -------------------------------------------------------------------------
+
+
+clearvars
+clc
+
 % Add Path 
 % -------------------------------------------------------------------------
 currentDir = fileparts(which('calculate_launch_window_and_best_transfer.m'));

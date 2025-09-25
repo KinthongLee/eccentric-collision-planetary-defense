@@ -1,9 +1,9 @@
 %==========================================================================
-% Interplanetary Trajectory Optimization for Planetary Defense Mission
+% Eccentric collision for Planetary Defense Mission
 % (Asteroid Kinetic Delfection)
 % 
 % Lee Kin Thong 
-% Sept 22 2025
+% Oct 1 2024
 %==========================================================================
 % You are free to use and modify the code, but you MUST cite the following
 % papers:
