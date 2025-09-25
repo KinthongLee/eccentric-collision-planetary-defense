@@ -1,19 +1,37 @@
-clearvars
-clc
-
+%==========================================================================
+% Eccentric collision for Planetary Defense Mission
+% (Asteroid Kinetic Delfection)
+% 
+% Lee Kin Thong 
+% Oct 1 2024
+%==========================================================================
+% You are free to use and modify the code, but you MUST cite the following
+% papers:
+%
+% Lee, Kinthong, Zhengqing Fang, and Zhaokui Wang. "Investigation of the 
+% incremental benefits of eccentric collisions in kinetic deflection of 
+% potentially hazardous asteroids." Icarus 425 (2025): 116312.
+%
+% Feels free to contact me for any inquiry or cooperation!
+% ktlee3819@gmail.com
+%==========================================================================
 % This code will Read the data from PHA_table
-
 % This code will calculate all the distribution of deflection distance by
 % both COG & BIP strategies through different types of 3D model of the
 % asteroid
-
 % The result of .mat file will be store in specific location.
-
 % Unlikely other code, this code WILL NOT generate a new table, only save
 % .mat file to futher code to plot the candle distribution of different
 % shape
+% -------------------------------------------------------------------------
 
-% ---------------------------  Add Path  -----------------------------------------------
+clearvars
+clc
+
+
+% -------------------------------------------------------------------------
+% Add Path 
+% -------------------------------------------------------------------------
 currentDir = fileparts(which('calculate_different_shape_deflection_distance.m'));
 addpath(genpath(currentDir))
 
@@ -28,11 +46,14 @@ end
 % Specify the directory where your .bsp files are located
 pathTokernel = fullfile(currentDir, 'code', 'kernel');
 
-% ---------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------
 
 
 
-% ---------Read data and shape from PHA_table.xlsx-----------------------------------------
+
+% -------------------------------------------------------------------------
+% ---------Read data and shape from PHA_table.xlsx-------------------------
+% -------------------------------------------------------------------------
 % Load shape
 shape_data = readtable('PHA_shape');
 % Load date
@@ -68,10 +89,14 @@ month_ini_string = values(monthNameMap, tokensMatrix(:,2));
 
 
 
-%-----------------------------Load Kernels------------------------------------------------
+
+
+% -------------------------------------------------------------------------
+% Load Kernels
+% -------------------------------------------------------------------------
  % List all .bsp files in the directory
  
-    % Start the SPMD block for parallel execution
+    % Start the SPMD block for parallel execution （parfor loop）
     spmd
         % List all .bsp files in the directory
         bspFiles = dir(fullfile(pathTokernel, '*.bsp'));
@@ -91,7 +116,24 @@ month_ini_string = values(monthNameMap, tokensMatrix(:,2));
             cspice_furnsh(filePath);
         end
     end
- % -----------------------------------------------------------------------------------------
+    % Load kernel for non parfor loop
+    % List all .bsp files in the directory
+    bspFiles = dir(fullfile(pathTokernel, '*.bsp'));
+    
+    % List all .txt files in the directory
+    txtFiles = dir(fullfile(pathTokernel, '*.txt'));
+    
+    % Combine the .bsp and .txt files into a single array
+    allFiles = [bspFiles; txtFiles];
+    
+    % Iterate over all files to load them
+    for k = 1:length(allFiles)
+        % Construct the full path for each file
+        filePath = fullfile(pathTokernel, allFiles(k).name);
+        
+        % Load the file using cspice_furnsh
+        cspice_furnsh(filePath);
+    end
 
 
 
@@ -101,8 +143,6 @@ month_ini_string = values(monthNameMap, tokensMatrix(:,2));
 
 % Number of Monte-Carlo samples modify if needed
  sample_size = 100000;
-
-
 
 % Properties, modify if needed 
 mass_Apophis = 2.7e10;

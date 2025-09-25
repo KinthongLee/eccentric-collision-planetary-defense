@@ -46,7 +46,7 @@ for ppp = 33:33
         theta_d_star = theta_d + w;
         eta = sqrt(1-e^2);
         mu = 132712440041.279422464;
-        % 换成km
+        % km
         v_d = norm(v_ast)/1000;
         r_d = norm(r_ast)/1000;
         h = norm(cross(r_ast,v_ast))/1000000;
