@@ -133,7 +133,7 @@ delta_t_to_min_point = et_min_earth - et_impact;
 Step   = 3600;   % [s] integration step size
 
 % pp is the row from the table PHA_shape
-for pp = 2 : 2
+for pp = 1 : 1
 model = [cell2mat(shape_data.Model(pp)),'.obj'];
 [vertices, faces] = readObj(model);
 

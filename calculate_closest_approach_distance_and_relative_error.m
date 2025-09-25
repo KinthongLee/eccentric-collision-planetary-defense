@@ -130,8 +130,6 @@ for p = 33 : 33
     [Y_EARTH, ~] = cspice_spkezr('EARTH', et, 'J2000', 'NONE', 'SUN');
     Y_EARTH = Y_EARTH.*1000;
     
-    
-    % 
 
 
     
@@ -161,8 +159,9 @@ for p = 33 : 33
     % Relative Error
     relative_error_min_r = abs(r_min - r_min_DE441 ) / r_min_DE441 * 100;
    
-    message = fprintf('HPOP for %i th asteroid: %s is Done', p,cell2mat(data.Object(p)));
+    message = fprintf('HPOP for %ith asteroid: %s is Done ', p,cell2mat(data.Object(p)));
     disp(message);
+    toc
     % Write data to table
     data.r_min_by_matlab(p) = r_min;
     data.r_min_relative_error(p) = relative_error_min_r;

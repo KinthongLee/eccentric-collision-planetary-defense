@@ -124,7 +124,7 @@ model = 'Apophis_Model.obj';
 % Code starts here
 % -------------------------------------------------------------------------
 % Run through the asteroid, p represent the number of row at the table "PHA_table.xlsx"
-for p = 33 : 33
+for p = 1 : 1
     target = num2str(data.BSP_file_name(p));
     v_imp = [data.v_imp_X(p);data.v_imp_Y(p);data.v_imp_Z(p)];
     v_ast = [data.v_ast_X(p);data.v_ast_Y(p);data.v_ast_Z(p)];

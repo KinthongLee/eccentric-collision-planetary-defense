@@ -1,12 +1,31 @@
-data = readtable('PHA_table');
+%==========================================================================
+% Interplanetary Trajectory Optimization for Planetary Defense Mission
+% (Asteroid Kinetic Delfection)
+% 
+% Lee Kin Thong 
+% Sept 22 2025
+%==========================================================================
+% You are free to use and modify the code, but you MUST cite the following
+% papers:
+%
+% Lee, Kinthong, Zhengqing Fang, and Zhaokui Wang. "Investigation of the 
+% incremental benefits of eccentric collisions in kinetic deflection of 
+% potentially hazardous asteroids." Icarus 425 (2025): 116312.
+%
+% Feels free to contact me for any inquiry or cooperation!
+% ktlee3819@gmail.com
+%==========================================================================
 % Calculate the deflection distance and Gain(%) through analytical method
 % Write data into PHA_table.xlsx for specific column: BI to BL, and output
 % to temporary result. 
-% If the result is correct, please manually copy and paste the result into PHA_table.xlsx.
-
+% If the result is correct, please manually copy and paste the result into 
+% PHA_table.xlsx.
 % Be noted true anomaly here is stored in variable named MOID, however it
 % is actually true anomaly at the moment of Closest-Approach, this will
 % increase the result instead of MOID
+%--------------------------------------------------------------------------
+
+data = readtable('PHA_table');
 for ppp = 33:33
     if ~isnan(data.Best_Impact_Year(ppp))
         v_imp = [data.v_imp_X(ppp);data.v_imp_Y(ppp);data.v_imp_Z(ppp)];
